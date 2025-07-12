@@ -21,14 +21,14 @@ npx zeabur auth --help
 ```bash
 # 上架模板
 npx zeabur template create -f supabase-enhanced.yaml
-
-# 部署模板
-npx zeabur template deploy -f supabase-enhanced.yaml
 ```
 
 ## 模板部署指令
 
 ```bash
+# 部署模板
+npx zeabur template deploy -f supabase-enhanced.yaml
+
 # 部署模板到指定專案
 npx zeabur template deploy -f supabase-enhanced.yaml --project-id PROJECT_ID
 ```
