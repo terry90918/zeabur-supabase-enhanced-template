@@ -2,9 +2,6 @@ apiVersion: zeabur.com/v1
 kind: Template
 metadata:
   name: Supabase (Enhanced)
-  version: "1.0.0"
-  maintainer: "Terry Chen <zxtw17985321@gmail.com>"
-  lastUpdated: "2025-07-12"
 spec:
   description: 開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
   icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
@@ -70,7 +67,7 @@ spec:
     - API 金鑰認證
     - 行級安全性 (RLS)
 
-services:
+  services:
   # PostgreSQL 資料庫
   - name: Database
     icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/postgresql.svg

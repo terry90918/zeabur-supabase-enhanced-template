@@ -22,15 +22,15 @@ npx zeabur auth --help
 # 上架模板
 npx zeabur template create -f supabase-enhanced.yaml
 
-# 測試部署模板
+# 部署模板
 npx zeabur template deploy -f supabase-enhanced.yaml
 ```
 
-## 模板驗證指令
+## 模板部署指令
 
 ```bash
-# 驗證模板檔案
-npx zeabur template validate -f supabase-enhanced.yaml
+# 部署模板到指定專案
+npx zeabur template deploy -f supabase-enhanced.yaml --project-id PROJECT_ID
 ```
 
 ## 模板管理指令
@@ -56,9 +56,9 @@ npx zeabur template delete -c CODE
 npx zeabur auth login
 ```
 
-2. 驗證模板檔案
+2. 部署模板到專案
 ```bash
-npx zeabur template validate -f supabase-enhanced.yaml
+npx zeabur template deploy -f supabase-enhanced.yaml --project-id PROJECT_ID
 ```
 
 3. 上架模板

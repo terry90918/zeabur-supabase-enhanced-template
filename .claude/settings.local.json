@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx zeabur template validate:*)",
+      "Bash(npx zeabur template deploy:*)",
+      "Bash(npx zeabur template create:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(npx:*)",
+      "Bash(python3:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": []
+  }
+}
