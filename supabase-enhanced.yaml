@@ -4,7 +4,7 @@ metadata:
   name: Supabase (Enhanced)
 spec:
   description: 開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
-  icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+  icon: https://icons.zeabur.com/supabase.png
   coverImage: https://supabase.com/_next/image?url=%2Fimages%2Fproduct%2Fdatabase%2Fheader--dark.png&w=1200&q=75
   variables:
     - key: SUPABASE_DOMAIN
@@ -78,7 +78,7 @@ spec:
   services:
   # PostgreSQL 資料庫
   - name: Database
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/postgresql.svg
+    icon: https://cdn.zeabur.com/marketplace/postgresql.svg
     template: PREBUILT
     spec:
       source:
@@ -116,7 +116,7 @@ spec:
 
   # Meta API
   - name: Meta
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://icons.zeabur.com/supabase.png
     template: PREBUILT
     dependencies:
       - Database
@@ -149,7 +149,7 @@ spec:
 
   # PostgREST API
   - name: REST
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://avatars.githubusercontent.com/u/15115011?v=4
     template: PREBUILT
     dependencies:
       - Database
@@ -176,7 +176,7 @@ spec:
 
   # GoTrue 身份驗證
   - name: Auth
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://icons.zeabur.com/supabase.png
     template: PREBUILT
     dependencies:
       - Database
@@ -209,7 +209,7 @@ spec:
 
   # MinIO 物件儲存
   - name: MinIO
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/minio.svg
+    icon: https://blog.min.io/content/images/2019/05/minio-publication-icon-7.png
     template: PREBUILT
     spec:
       source:
@@ -235,7 +235,7 @@ spec:
 
   # Storage API
   - name: Storage
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://icons.zeabur.com/supabase.png
     template: PREBUILT
     dependencies:
       - Database
@@ -272,7 +272,7 @@ spec:
 
   # Realtime 服務
   - name: Realtime
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://icons.zeabur.com/supabase.png
     template: PREBUILT
     dependencies:
       - Database
@@ -308,7 +308,7 @@ spec:
 
   # Kong API Gateway
   - name: Kong
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/kong.svg
+    icon: https://icons.zeabur.com/kong.svg
     template: PREBUILT
     domainKey: SUPABASE_DOMAIN
     dependencies:
@@ -454,7 +454,7 @@ spec:
 
   # Supabase Studio
   - name: Studio
-    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    icon: https://icons.zeabur.com/supabase.png
     template: PREBUILT
     dependencies:
       - Kong

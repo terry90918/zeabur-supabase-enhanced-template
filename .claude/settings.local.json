@@ -8,8 +8,7 @@
       "Bash(tree:*)",
       "Bash(npx:*)",
       "Bash(python3:*)",
-      "Bash(cat:*)",
-      "WebFetch(domain:github.com)"
+      "Bash(cat:*)"
     ],
     "deny": []
   }
