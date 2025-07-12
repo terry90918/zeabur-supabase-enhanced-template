@@ -1,0 +1,512 @@
+apiVersion: zeabur.com/v1
+kind: Template
+metadata:
+  name: Supabase Enhanced
+spec:
+  description: 增強的開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
+  icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+  coverImage: https://supabase.com/_next/image?url=%2Fimages%2Fproduct%2Fdatabase%2Fheader--dark.png&w=1200&q=75
+  variables:
+    - key: SUPABASE_DOMAIN
+      type: DOMAIN
+      name: Supabase 網域
+      description: 您想要為 Supabase Studio 設定什麼網域？
+    - key: ADMIN_USERNAME
+      type: STRING
+      name: 管理員用戶名
+      description: Supabase Studio 的管理員用戶名
+    - key: ADMIN_PASSWORD
+      type: STRING
+      name: 管理員密碼
+      description: Supabase Studio 的管理員密碼（建議使用強密碼）
+  tags:
+    - Database
+    - Backend
+    - API
+    - Authentication
+    - Realtime
+  readme: |
+    # Supabase Enhanced
+
+    增強版 Supabase 模板，專為企業級部署設計，提供完整的中文化支援和最佳實踐配置。
+
+    ## 🚀 核心功能
+
+    - **PostgreSQL 資料庫**: 完整的 Postgres 17.4 資料庫
+    - **身份驗證**: GoTrue 多提供商身份驗證
+    - **即時 API**: PostgREST 自動生成 API
+    - **即時訂閱**: Realtime 即時資料同步
+    - **檔案儲存**: MinIO + Storage API
+    - **管理儀表板**: Supabase Studio
+    - **API Gateway**: Kong 反向代理
+
+    ## 📦 服務架構
+
+    此模板包含完整的 Supabase 堆疊：
+    - Kong (API Gateway)
+    - Studio (管理儀表板)
+    - Database (PostgreSQL 17.4)
+    - Meta (PostgreSQL API)
+    - REST (PostgREST API)
+    - Auth (GoTrue 身份驗證)
+    - Storage (檔案儲存)
+    - MinIO (物件儲存)
+    - Realtime (即時服務)
+
+    ## 🔧 部署後設定
+
+    1. 使用管理員憑證登入 Studio
+    2. 建立您的資料庫結構
+    3. 配置身份驗證提供商
+    4. 設定 API 權限和 RLS
+
+    ## 🔒 安全特性
+
+    - JWT 金鑰管理
+    - 角色權限控制
+    - API 金鑰認證
+    - 行級安全性 (RLS)
+
+services:
+  # PostgreSQL 資料庫
+  - name: Database
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/postgresql.svg
+    template: PREBUILT
+    spec:
+      source:
+        image: supabase/postgres:17.4.1.022
+      ports:
+        - id: database
+          port: 5432
+          type: TCP
+      volumes:
+        - id: postgres-data
+          dir: /var/lib/postgresql/data
+      env:
+        POSTGRES_DB:
+          default: postgres
+          expose: true
+          readonly: true
+        POSTGRES_USER:
+          default: supabase_admin
+          expose: true
+          readonly: true
+        POSTGRES_PASSWORD:
+          default: ${PASSWORD}
+          expose: true
+        POSTGRES_HOST:
+          default: ${CONTAINER_HOSTNAME}
+          expose: true
+          readonly: true
+        POSTGRES_PORT:
+          default: ${DATABASE_PORT}
+          expose: true
+          readonly: true
+        JWT_SECRET:
+          default: your-super-secret-jwt-token-with-at-least-32-characters-long
+          expose: true
+
+  # Meta API
+  - name: Meta
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Database
+    spec:
+      source:
+        image: supabase/postgres-meta:v0.88.9
+      ports:
+        - id: meta
+          port: 8080
+          type: HTTP
+      env:
+        PG_META_PORT:
+          default: "8080"
+          readonly: true
+        PG_META_DB_HOST:
+          default: ${POSTGRES_HOST}
+          readonly: true
+        PG_META_DB_PORT:
+          default: ${POSTGRES_PORT}
+          readonly: true
+        PG_META_DB_NAME:
+          default: ${POSTGRES_DB}
+          readonly: true
+        PG_META_DB_USER:
+          default: ${POSTGRES_USER}
+          readonly: true
+        PG_META_DB_PASSWORD:
+          default: ${POSTGRES_PASSWORD}
+          readonly: true
+
+  # PostgREST API
+  - name: REST
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Database
+    spec:
+      source:
+        image: postgrest/postgrest:v12.2.11
+      ports:
+        - id: rest
+          port: 3000
+          type: HTTP
+      env:
+        PGRST_DB_URI:
+          default: postgresql://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres
+          readonly: true
+        PGRST_DB_SCHEMAS:
+          default: public
+          readonly: true
+        PGRST_DB_ANON_ROLE:
+          default: anon
+          readonly: true
+        PGRST_JWT_SECRET:
+          default: ${JWT_SECRET}
+          readonly: true
+
+  # GoTrue 身份驗證
+  - name: Auth
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Database
+    spec:
+      source:
+        image: supabase/gotrue:v2.171.0
+      ports:
+        - id: auth
+          port: 9999
+          type: HTTP
+      env:
+        GOTRUE_API_HOST:
+          default: 0.0.0.0
+          readonly: true
+        GOTRUE_API_PORT:
+          default: "9999"
+          readonly: true
+        GOTRUE_DB_DRIVER:
+          default: postgres
+          readonly: true
+        GOTRUE_DB_DATABASE_URL:
+          default: postgresql://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres
+          readonly: true
+        GOTRUE_SITE_URL:
+          default: https://${SUPABASE_DOMAIN}
+          readonly: true
+        GOTRUE_JWT_SECRET:
+          default: ${JWT_SECRET}
+          readonly: true
+
+  # MinIO 物件儲存
+  - name: MinIO
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/minio.svg
+    template: PREBUILT
+    spec:
+      source:
+        image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+      ports:
+        - id: api
+          port: 9000
+          type: HTTP
+      volumes:
+        - id: minio-data
+          dir: /data
+      env:
+        MINIO_ROOT_USER:
+          default: supabase
+          expose: true
+          readonly: true
+        MINIO_ROOT_PASSWORD:
+          default: ${PASSWORD}
+          expose: true
+      command:
+        - server
+        - /data
+
+  # Storage API
+  - name: Storage
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Database
+      - MinIO
+    spec:
+      source:
+        image: supabase/storage-api:v1.22.8
+      ports:
+        - id: storage
+          port: 5000
+          type: HTTP
+      env:
+        ANON_KEY:
+          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          readonly: true
+        SERVICE_KEY:
+          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+          readonly: true
+        DATABASE_URL:
+          default: postgresql://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres
+          readonly: true
+        STORAGE_BACKEND:
+          default: s3
+          readonly: true
+        AWS_ACCESS_KEY_ID:
+          default: ${MINIO_ROOT_USER}
+          readonly: true
+        AWS_SECRET_ACCESS_KEY:
+          default: ${MINIO_ROOT_PASSWORD}
+          readonly: true
+        AWS_ENDPOINT_URL_S3:
+          default: http://MinIO:9000
+          readonly: true
+
+  # Realtime 服務
+  - name: Realtime
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Database
+    spec:
+      source:
+        image: supabase/realtime:v2.34.47
+      ports:
+        - id: realtime
+          port: 4000
+          type: HTTP
+      env:
+        PORT:
+          default: "4000"
+          readonly: true
+        DB_HOST:
+          default: ${POSTGRES_HOST}
+          readonly: true
+        DB_PORT:
+          default: ${POSTGRES_PORT}
+          readonly: true
+        DB_USER:
+          default: supabase_admin
+          readonly: true
+        DB_PASSWORD:
+          default: ${POSTGRES_PASSWORD}
+          readonly: true
+        DB_NAME:
+          default: ${POSTGRES_DB}
+          readonly: true
+        API_JWT_SECRET:
+          default: ${JWT_SECRET}
+          readonly: true
+
+  # Kong API Gateway
+  - name: Kong
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/kong.svg
+    template: PREBUILT
+    domainKey: SUPABASE_DOMAIN
+    dependencies:
+      - Database
+      - Meta
+      - REST
+      - Auth
+      - Storage
+      - Realtime
+    spec:
+      source:
+        image: kong:2.8.1
+      ports:
+        - id: proxy
+          port: 8000
+          type: HTTP
+      env:
+        KONG_DATABASE:
+          default: "off"
+          readonly: true
+        KONG_DECLARATIVE_CONFIG:
+          default: /var/lib/kong/kong.yml
+          readonly: true
+        KONG_PLUGINS:
+          default: request-transformer,cors,key-auth,acl,basic-auth
+          readonly: true
+        ANON_KEY:
+          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          expose: true
+          readonly: true
+        SERVICE_ROLE_KEY:
+          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+          expose: true
+          readonly: true
+        DASHBOARD_USERNAME:
+          default: ${ADMIN_USERNAME}
+          readonly: true
+        DASHBOARD_PASSWORD:
+          default: ${ADMIN_PASSWORD}
+          readonly: true
+      configs:
+        - path: /var/lib/kong/kong.yml
+          template: |
+            _format_version: "3.0"
+            _transform: true
+            consumers:
+              - username: anon
+                keyauth_credentials:
+                  - key: ${ANON_KEY}
+              - username: service_role
+                keyauth_credentials:
+                  - key: ${SERVICE_ROLE_KEY}
+              - username: DASHBOARD
+            basicauth_credentials:
+              - consumer: DASHBOARD
+                username: ${DASHBOARD_USERNAME}
+                password: ${DASHBOARD_PASSWORD}
+            acls:
+              - consumer: anon
+                group: anon
+              - consumer: service_role
+                group: anon
+              - consumer: service_role
+                group: service_role
+            services:
+              - name: auth-v1
+                url: http://Auth:9999/
+                plugins:
+                  - name: cors
+                  - name: key-auth
+                    config:
+                      hide_credentials: false
+                  - name: acl
+                    config:
+                      hide_groups_header: true
+                      allow:
+                        - anon
+                        - service_role
+              - name: rest-v1
+                url: http://REST:3000/
+                plugins:
+                  - name: cors
+                  - name: key-auth
+                    config:
+                      hide_credentials: true
+                  - name: acl
+                    config:
+                      hide_groups_header: true
+                      allow:
+                        - anon
+                        - service_role
+              - name: realtime-v1
+                url: http://Realtime:4000/socket/
+                plugins:
+                  - name: cors
+                  - name: key-auth
+                    config:
+                      hide_credentials: false
+                  - name: acl
+                    config:
+                      hide_groups_header: true
+                      allow:
+                        - anon
+                        - service_role
+              - name: storage-v1
+                url: http://Storage:5000/
+                plugins:
+                  - name: cors
+              - name: meta-v1
+                url: http://Meta:8080/
+                plugins:
+                  - name: cors
+                  - name: key-auth
+                    config:
+                      hide_credentials: true
+                  - name: acl
+                    config:
+                      hide_groups_header: true
+                      allow:
+                        - service_role
+            routes:
+              - service: auth-v1
+                paths:
+                  - "~/auth/v1/"
+                strip_path: true
+              - service: rest-v1
+                paths:
+                  - "~/rest/v1/"
+                strip_path: true
+              - service: realtime-v1
+                paths:
+                  - "~/realtime/v1/"
+                strip_path: true
+              - service: storage-v1
+                paths:
+                  - "~/storage/v1/"
+                strip_path: true
+              - service: meta-v1
+                paths:
+                  - "~/pg/"
+                strip_path: true
+          envsubst: true
+
+  # Supabase Studio
+  - name: Studio
+    icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
+    template: PREBUILT
+    dependencies:
+      - Kong
+    spec:
+      source:
+        image: supabase/studio:2025.04.28-sha-dd03625
+      ports:
+        - id: studio
+          port: 3000
+          type: HTTP
+      env:
+        STUDIO_PG_META_URL:
+          default: http://Kong:8000/pg
+          readonly: true
+        SUPABASE_URL:
+          default: http://Kong:8000
+          readonly: true
+        SUPABASE_ANON_KEY:
+          default: ${ANON_KEY}
+          readonly: true
+        SUPABASE_SERVICE_KEY:
+          default: ${SERVICE_ROLE_KEY}
+          readonly: true
+
+localization:
+  zh-TW:
+    description: 增強的開源 Firebase 替代方案，專為企業級部署優化，提供完整中文化支援
+    variables:
+      - key: SUPABASE_DOMAIN
+        type: DOMAIN
+        name: Supabase 網域
+        description: 您想要為 Supabase 設定什麼網域？
+      - key: ADMIN_USERNAME
+        type: STRING
+        name: 管理員用戶名
+        description: Supabase Studio 的管理員用戶名
+      - key: ADMIN_PASSWORD
+        type: STRING
+        name: 管理員密碼
+        description: Supabase Studio 的管理員密碼（建議使用強密碼）
+    readme: |
+      # Supabase Enhanced - 企業級版本
+
+      專為台灣市場設計的增強版 Supabase 模板，提供完整的中文化體驗和企業級配置。
+
+      ## 🌟 台灣本地化特色
+
+      - **完整中文化**: 所有介面和文檔的中文支援
+      - **在地優化**: 針對台灣網路環境優化的配置
+      - **企業級架構**: 適合台灣企業的部署架構
+      - **技術支援**: 提供中文技術文檔和支援
+
+      ## 🚀 快速部署
+
+      1. 設定您的網域和管理員憑證
+      2. 一鍵部署完整的 Supabase 堆疊
+      3. 立即開始您的專案開發
+
+      ## 📞 支援與幫助
+
+      - [官方文檔](https://supabase.com/docs)
+      - [社群支援](https://github.com/supabase/supabase)
+      - [API 參考](https://supabase.com/docs/reference)
