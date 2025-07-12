@@ -5,7 +5,7 @@ metadata:
 spec:
   description: 開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
   icon: https://icons.zeabur.com/supabase.png
-  coverImage: https://supabase.com/_next/image?url=%2Fimages%2Fproduct%2Fdatabase%2Fheader--dark.png&w=1200&q=75
+  coverImage: https://miro.medium.com/v2/resize:fit:1200/1*KllQKJSGK5QruqT8kIElEA.png
   variables:
     - key: SUPABASE_DOMAIN
       type: DOMAIN
