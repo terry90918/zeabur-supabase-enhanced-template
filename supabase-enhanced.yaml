@@ -1,12 +1,12 @@
 apiVersion: zeabur.com/v1
 kind: Template
 metadata:
-  name: Supabase Enhanced
+  name: Supabase (Enhanced)
   version: "1.0.0"
   maintainer: "Terry Chen <zxtw17985321@gmail.com>"
   lastUpdated: "2025-07-12"
 spec:
-  description: 增強的開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
+  description: 開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
   icon: https://raw.githubusercontent.com/zeabur/service-icons/main/marketplace/supabase.svg
   coverImage: https://supabase.com/_next/image?url=%2Fimages%2Fproduct%2Fdatabase%2Fheader--dark.png&w=1200&q=75
   variables:
@@ -29,9 +29,9 @@ spec:
     - Authentication
     - Realtime
   readme: |
-    # Supabase Enhanced
+    # Supabase
 
-    增強版 Supabase 模板，專為企業級部署設計，提供完整的中文化支援和最佳實踐配置。
+    Supabase 模板，專為企業級部署設計，提供完整的中文化支援和最佳實踐配置。
 
     ## 🚀 核心功能
 
@@ -476,7 +476,7 @@ services:
 
 localization:
   zh-TW:
-    description: 增強的開源 Firebase 替代方案，專為企業級部署優化，提供完整中文化支援
+    description: 開源 Firebase 替代方案，專為企業級部署優化，提供完整中文化支援
     variables:
       - key: SUPABASE_DOMAIN
         type: DOMAIN
@@ -491,9 +491,9 @@ localization:
         name: 管理員密碼
         description: Supabase Studio 的管理員密碼（建議使用強密碼）
     readme: |
-      # Supabase Enhanced - 企業級版本
+      # Supabase - 企業級版本
 
-      專為台灣市場設計的增強版 Supabase 模板，提供完整的中文化體驗和企業級配置。
+      專為台灣市場設計的 Supabase 模板，提供完整的中文化體驗和企業級配置。
 
       ## 🌟 台灣本地化特色
 
