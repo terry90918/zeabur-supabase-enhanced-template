@@ -1,0 +1,24 @@
+{
+  "name": "zeabur-supabase-enhanced-template",
+  "version": "1.0.0",
+  "description": "開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存",
+  "keywords": [
+    "zeabur",
+    "supabase"
+  ],
+  "homepage": "https://github.com/terry90918/zeabur-supabase-enhanced-template#readme",
+  "bugs": {
+    "url": "https://github.com/terry90918/zeabur-supabase-enhanced-template/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terry90918/zeabur-supabase-enhanced-template.git"
+  },
+  "license": "MIT",
+  "author": "terry chen <zxtw17985321@gmail.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
