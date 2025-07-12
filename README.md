@@ -95,3 +95,6 @@ npx zeabur auth --help
 ### v1.0.0
 - 初始版本發布
 - 基本 Supabase 堆疊部署
+
+## 📦 部署平台
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/LXL5G9?referralCode=terry90918)
