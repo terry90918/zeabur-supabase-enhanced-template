@@ -1,7 +1,7 @@
 apiVersion: zeabur.com/v1
 kind: Template
 metadata:
-  name: Supabase (Enhanced)
+  name: Supabase (v1.25.04)
 spec:
   description: 開源 Firebase 替代方案，提供完整的後端服務包括資料庫、身份驗證、即時 API 和儲存
   icon: https://icons.zeabur.com/supabase.png
