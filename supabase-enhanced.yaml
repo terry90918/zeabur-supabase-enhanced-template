@@ -19,6 +19,14 @@ spec:
       type: STRING
       name: 管理員密碼
       description: Supabase Studio 的管理員密碼（建議使用強密碼）
+    - key: ANON_KEY
+      type: STRING
+      name: 匿名金鑰
+      description: 用於匿名存取的 JWT 金鑰
+    - key: SERVICE_ROLE_KEY
+      type: STRING
+      name: 服務角色金鑰
+      description: 用於服務間通訊的 JWT 金鑰
   tags:
     - Database
     - Backend
@@ -74,7 +82,7 @@ spec:
     template: PREBUILT
     spec:
       source:
-        image: supabase/postgres:17.4.1.022
+        image: supabase/postgres:15.8.1.060
       ports:
         - id: database
           port: 5432
@@ -103,7 +111,7 @@ spec:
           expose: true
           readonly: true
         JWT_SECRET:
-          default: your-super-secret-jwt-token-with-at-least-32-characters-long
+          default: ${PASSWORD}
           expose: true
 
   # Meta API
@@ -114,7 +122,7 @@ spec:
       - Database
     spec:
       source:
-        image: supabase/postgres-meta:v0.88.9
+        image: supabase/postgres-meta:v0.89.3
       ports:
         - id: meta
           port: 8080
@@ -147,7 +155,7 @@ spec:
       - Database
     spec:
       source:
-        image: postgrest/postgrest:v12.2.11
+        image: postgrest/postgrest:v12.2.12
       ports:
         - id: rest
           port: 3000
@@ -174,7 +182,7 @@ spec:
       - Database
     spec:
       source:
-        image: supabase/gotrue:v2.171.0
+        image: supabase/gotrue:v2.176.1
       ports:
         - id: auth
           port: 9999
@@ -205,7 +213,7 @@ spec:
     template: PREBUILT
     spec:
       source:
-        image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+        image: minio/minio:RELEASE.2025-01-01T22-49-24Z
       ports:
         - id: api
           port: 9000
@@ -234,17 +242,17 @@ spec:
       - MinIO
     spec:
       source:
-        image: supabase/storage-api:v1.22.8
+        image: supabase/storage-api:v1.24.7
       ports:
         - id: storage
           port: 5000
           type: HTTP
       env:
         ANON_KEY:
-          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          default: ${ANON_KEY}
           readonly: true
         SERVICE_KEY:
-          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+          default: ${SERVICE_ROLE_KEY}
           readonly: true
         DATABASE_URL:
           default: postgresql://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres
@@ -328,11 +336,11 @@ spec:
           default: request-transformer,cors,key-auth,acl,basic-auth
           readonly: true
         ANON_KEY:
-          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          default: ${ANON_KEY}
           expose: true
           readonly: true
         SERVICE_ROLE_KEY:
-          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+          default: ${SERVICE_ROLE_KEY}
           expose: true
           readonly: true
         DASHBOARD_USERNAME:
@@ -452,7 +460,7 @@ spec:
       - Kong
     spec:
       source:
-        image: supabase/studio:2025.04.28-sha-dd03625
+        image: supabase/studio:2025.06.30-sha-6f5982d
       ports:
         - id: studio
           port: 3000
@@ -478,7 +486,7 @@ localization:
       - key: SUPABASE_DOMAIN
         type: DOMAIN
         name: Supabase 網域
-        description: 您想要為 Supabase 設定什麼網域？
+        description: 您想要為 Supabase Studio 設定什麼網域？
       - key: ADMIN_USERNAME
         type: STRING
         name: 管理員用戶名
@@ -487,6 +495,14 @@ localization:
         type: STRING
         name: 管理員密碼
         description: Supabase Studio 的管理員密碼（建議使用強密碼）
+      - key: ANON_KEY
+        type: STRING
+        name: 匿名金鑰
+        description: 用於匿名存取的 JWT 金鑰
+      - key: SERVICE_ROLE_KEY
+        type: STRING
+        name: 服務角色金鑰
+        description: 用於服務間通訊的 JWT 金鑰
     readme: |
       # Supabase - 企業級版本
 
